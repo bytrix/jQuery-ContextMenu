@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <style>
+        body {
+            font-family: "Bitstream Vera Sans";
+        }
+        ul#menu {
+            display: inline-block;
+            position: absolute;
+            background-color: #eeeeee;
+            border: 1px solid #bbbbbb;
+            cursor: default;
+            color: #333333;
+            padding: 4px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        ul#menu>li {
+            list-style-type: none;
+            padding: 4px 12px 4px 4px;
+            border-radius: 4px;
+            text-indent: 8px;
+        }
+        ul#menu>li:hover {
+            background-color: cornflowerblue;
+            color: #ffffff;
+        }
+        ul#menu>li.disabled {
+            color: #aaaaaa;
+        }
+        ul#menu>li.disabled:hover {
+            background: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>hello</h1>
+
+<input type="text" id="text" value="hello"/>
+
+<ul id="menu"></ul>
+
+<script>
+    var menuShow = false;
+    var options = {
+        items: [
+            {
+                label: 'open Baidu',
+                operation: function () {
+                    window.open('http://www.baidu.com');
+                }
+            },
+            {
+                label: 'Alert something',
+                operation: function () {
+                    alert('something is here....');
+                }
+            },
+            {
+                label: 'Hide Hello',
+                operation: function () {
+                    if (this.label == 'Hide Hello') {
+                        console.log('hide hello...');
+                        $('h1').hide();
+                        this.label = 'Show Hello';
+                    } else if (this.label == 'Show Hello') {
+                        console.log('show hello...');
+                        $('h1').show();
+                        this.label = 'Hide Hello';
+                    }
+                }
+            },
+            {
+                label: 'Show time in inputbox',
+                operation: function () {
+                    $('#text').val(new Date().toLocaleTimeString());
+                }
+            },
+            {
+                label: 'Disabled item',
+                disabled: true
+            }
+        ]
+    };
+//    for(var i in options.items) {
+//        var item = options.items[i];
+//        var itemObj = "<li>" + item.label + "</li>";
+//        $('#menu').append(itemObj);
+//    }
+
+//    $('#menu>li').click(function () {
+//        var item = options.items[$(this).index()];
+//        item.operation();
+//    });
+    $('#menu').hide();
+    $('html').contextmenu(function (e) {
+        $('#menu>li').remove();
+        for(var i in options.items) {
+            var item = options.items[i];
+            if (item.disabled == true) {
+                var itemObj = "<li class='disabled'>" + item.label + "</li>";
+            } else {
+                var itemObj = "<li>" + item.label + "</li>";
+            }
+            $('#menu').append(itemObj);
+        }
+        menuShow = true;
+        $('#menu')
+            .show()
+            .offset({left: e.clientX, top: e.clientY});
+        $('#menu>li').click(function () {
+            var item = options.items[$(this).index()];
+            if (item.disabled == true) {
+                return false;
+            } else {
+                $('#menu').hide();
+                item.operation();
+            }
+        });
+        return false;
+    });
+    $('html').click(function () {
+        if (menuShow == true) {
+            menuShow = false;
+            $('#menu').hide();
+        }
+    });
+</script>
+
+</body>
+</html>
